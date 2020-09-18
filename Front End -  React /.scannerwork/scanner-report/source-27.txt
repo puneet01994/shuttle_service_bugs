@@ -1,0 +1,74 @@
+import React from "react";
+import "../../Styles/table.css";
+import { Col, Row, Table, Alert } from "reactstrap";
+import PropTypes from "prop-types";
+
+import {
+  eid,
+  name,
+  origin,
+  destination,
+  time,
+  vehicleNumber,
+  noUpcomingTrips,
+} from "../../Constants/constants";
+
+/**
+ * StatusTableUI function to display the employee status travelling on that day.
+ * TableUI displays the data.
+ * @param {object} props
+ *    @param {string} status
+ */
+export default function StatusTableUI(props) {
+  const { status } = props;
+  return status.length > 0 ? (
+    <div data-test="employeeStatus">
+      <div className="BigTbl">
+        <Row>
+          <Col>
+            <Table responsive striped hover>
+              <thead>
+                <tr>
+                  <th>{eid}</th>
+                  <th>{name}</th>
+                  <th>{origin}</th>
+                  <th>{destination}</th>
+                  <th>{time}</th>
+                  <th>{vehicleNumber}</th>
+                  <th>status</th>
+                </tr>
+              </thead>
+              <tbody>
+                {status.map((row) => (
+                  <tr data-test="EmpStatusRow" key>
+                    <td>{row.employeeId}</td>
+                    <td>{row.name}</td>
+                    <td>{row.origin}</td>
+                    <td>{row.destination}</td>
+                    <td>{row.tripTime}</td>
+                    <td>{row.vehicleNumber}</td>
+                    <td>{row.tripStatus}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+      </div>
+    </div>
+  ) : (
+    <Alert data-test="NoUpcomingTrip" color="dark">
+      {noUpcomingTrips}
+    </Alert>
+  );
+}
+
+StatusTableUI.propTypes = {
+  isLoading: PropTypes.bool,
+  status: PropTypes.string,
+  status1: PropTypes.string,
+  status2: PropTypes.string,
+  status3: PropTypes.string,
+  selectedTable: PropTypes.func,
+  value: PropTypes.string,
+};

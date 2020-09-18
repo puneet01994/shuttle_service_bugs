@@ -1,0 +1,170 @@
+
+
+.Tbl thead {
+  background-color: #45a2b8;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+  white-space: nowrap;
+}
+.Tbl tbody {
+  white-space: nowrap;
+  text-align: left;
+ 
+}
+.BigTbl tbody {
+  white-space: nowrap;
+  text-align: left;
+  overflow: hidden;
+}
+
+.custom-td{
+  width: 10%;
+}
+
+.BigTbl tbody td {
+  text-align: left;
+}
+
+.button {
+  background-color: #45a2b8;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  margin-right: 30px;
+
+  white-space: nowrap;
+  text-align: center;
+  width: 60px;
+  height: 30px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+}
+.button1 {
+  background-color: #45a2b8;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  margin-bottom: 10px;
+  text-align: center;
+
+  white-space: nowrap;
+  width: 130px;
+  height: 35px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 14px;
+}
+
+.Tbl {
+  display: inline-block;
+  border-collapse: collapse;
+  font-size: small;
+}
+.BigTbl {
+  display: block;
+  border-collapse: collapse;
+  font-size: small;
+}
+
+.BigTbl thead {
+  background-color: #45a2b8;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  text-align: left;
+
+  white-space: nowrap;
+}
+/* .table-responsive{
+  overflow-x: hidden !important;
+} */
+.icon {
+  height: 30px;
+  width: 30px;
+}
+.iconRadio {
+  height: 30px;
+  width: 30px;
+  white-space: pre;
+}
+
+.TextIcon {
+  height: 30px;
+  width: 30px;
+}
+
+.text {
+  background-color: #45a2b8;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  width: 30px;
+  height: 30px;
+  font-size: 12px;
+}
+
+.ascicon {
+  height: 30px;
+  width: 30px;
+}
+
+.descicon {
+  height: 30px;
+  width: 30px;
+}
+
+.dropdown {
+  background-color: #45a2b8;
+  border: none;
+  border-radius: 5px;
+  color: white;
+
+  text-align: center;
+
+  white-space: nowrap;
+  width: 80px;
+  height: 30px;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 12px;
+}
+
+
+
+  .background {
+    margin-top: 130px;
+    margin-left: 450px;
+    width: 150px;
+    height: 150px;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+  }
+
+
+
+
+.errorImage {
+  width: 20%;
+  height: 30%;
+  margin-top: 3rem;
+  align-content: center;
+}
+
+.refreshBtn {
+  background-color: #d13d36;
+  border: none;
+  border-radius: 5px;
+  color: white;
+  margin-top: 0rem;
+  text-align: center;
+
+  width: 130px;
+  height: 35px;
+
+  display: inline-block;
+  font-size: 20px;
+}

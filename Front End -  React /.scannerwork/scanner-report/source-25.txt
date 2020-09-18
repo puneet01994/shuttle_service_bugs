@@ -1,0 +1,61 @@
+import React, { Component } from "react";
+import PropTypes from "prop-types";
+import { connect } from "react-redux";
+import { getStatusTable ,getHomePageCard} from "../../Redux/actions/GET-API";
+import DriverStatusUI from "./DriverStatusUI";
+import VehicleHavingTrips from "./VehicleHavingTrips.js";
+import StatusTableUI from "./StatusTableUI";
+
+
+/**
+ * Table UI displays data
+ * StatusTableUI to display the employee status.
+ * DriverStatusUI to display the driver status.
+ * VehiclehavingTrips to display the  vehicle status.
+ */
+
+class TableUI extends Component {
+  
+  render() {
+    switch (this.props.value) {
+    case 1:
+      return (
+        <StatusTableUI data-test="StatusTableUI" status={this.props.status} />
+      );
+    case 2:
+      return (
+        <DriverStatusUI
+          data-test="DriverStatusUI"
+          status1={this.props.status1}
+        />
+      );
+    case 3:
+      return (
+        <VehicleHavingTrips
+          data-test="VehicleHavingTripsUI"
+          status2={this.props.status2}
+        />
+      );
+    default:
+      return null;
+    }
+  }
+}
+TableUI.propTypes = {
+  status: PropTypes.array,
+  status1: PropTypes.array,
+  status2: PropTypes.array,
+  getStatusTable:PropTypes.func,
+  token:PropTypes.string,
+  value:PropTypes.string
+};
+
+function mapStateToProps(state) {
+  return {
+    status: state.statusTableReducer.bookingData,
+    status1: state.statusTableReducer.driverStatusData,
+    status2: state.statusTableReducer.vehicleHavingData,
+  };
+}
+
+export default connect(mapStateToProps, { getStatusTable ,getHomePageCard})(TableUI);

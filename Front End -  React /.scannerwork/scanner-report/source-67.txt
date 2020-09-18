@@ -1,0 +1,318 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import { Select } from "antd";
+
+import "antd/dist/antd.css";
+import { Button, Modal } from "react-bootstrap";
+import {
+  Alert,
+  Badge,
+  Card,
+  CardBody,
+  Col,
+  Row,
+  Table,
+  Form,
+  FormGroup,
+  Label,
+  CardHeader,
+  Input,
+} from "reactstrap";
+import "../../Styles/table.css";
+import Loader from "../Pages/Loader";
+import PropTypes from "prop-types";
+import { EditButton } from "../Pages/Buttons";
+import { Na } from "../Pages/NotAvailable";
+
+import {
+  nightCabRequests,
+  eid,
+  empName,
+  destination,
+  preferredTime,
+  driverName,
+  vehicleNumber,
+  driverContactNumber,
+  assignedRoute,
+  assignedTimings,
+  driverStatus,
+  notAssigned,
+  assigned,
+  noCabRequests,
+  assigncab,
+  empId,
+  submit,
+  contactNumber,
+} from "../../Constants/constants";
+
+/**
+ * CabRequestUI to dispaly the number of requests recieved.
+ * CardHeader to dispaly the button to open the modal
+ * Modal to fill the form and assign the cabs.
+ * @param {object} props
+ */
+export default function CabRequestUI(props) {
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="NightCabRequests" className="container">
+      <h3>{nightCabRequests}</h3>
+
+      <div className="BigTbl">
+        {props.status.length > 0 ? (
+          <Card data-test="card">
+            <CardHeader>
+              <Row>
+                <Col>
+                  <input
+                    className="button1"
+                    onClick={props.addModalopen}
+                    value="Assign"
+                    type="button"
+                  />{" "}
+                </Col>
+              </Row>
+            </CardHeader>
+            <CardBody>
+              <Table responsive striped hover>
+                <thead>
+                  <tr>
+                    <th>{eid}</th>
+                    <th>{empName}</th>
+                    <th>{contactNumber}</th>
+                    <th>{destination}</th>
+                    <th>{preferredTime}</th>
+                    <th>{driverName}</th>
+                    <th>{vehicleNumber}</th>
+                    <th>{driverContactNumber}</th>
+                    <th>{assignedRoute}</th>
+                    <th>{assignedTimings}</th>
+
+                    <th>{driverStatus}</th>
+
+                    <th></th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {props.status &&
+                    props.status.map((row) => (
+                      <tr
+                        data-test="requestRow"
+                        key={row.employeeId}
+                        onClick={(e) => props.handleCheckChange(row.employeeId)}
+                      >
+                        <td>{row.employeeId}</td>
+                        <td>{row.name}</td>
+                        <td>{row.contactNumber}</td>
+                        <td>{row.destination}</td>
+                        <td>{row.preferredTime}</td>
+                        <td>
+                          {row.driverName === null ? (
+                            <Na data-test="NA" />
+                          ) : (
+                            row.driverName
+                          )}
+                        </td>
+
+                        <td>
+                          {row.vehicleNumber === null ? (
+                            <Na data-test="NA" />
+                          ) : (
+                            row.vehicleNumber
+                          )}
+                        </td>
+                        <td>
+                          {row.driverContactNumber === null ? (
+                            <Na data-test="NA" />
+                          ) : (
+                            row.driverContactNumber
+                          )}
+                        </td>
+                        <td>
+                          {row.assignedRoute === null ? (
+                            <Na data-test="NA" />
+                          ) : (
+                            row.assignedRoute
+                          )}
+                        </td>
+                        <td>
+                          {row.assignedTiming === null ? (
+                            <Na data-test="NA" />
+                          ) : (
+                            row.assignedTiming
+                          )}
+                        </td>
+
+                        <td>
+                          {row.driverName === null ? (
+                            <h3>
+                              <Badge data-test="Notassigned" color="danger">
+                                {notAssigned}
+                              </Badge>
+                            </h3>
+                          ) : (
+                            <h3>
+                              <Badge data-test="assigned" color="success">
+                                {assigned}
+                              </Badge>
+                            </h3>
+                          )}
+                        </td>
+                        <td>
+                          {row.employeeId === props.targetId &&
+                            row.driverName !== null && (
+                            <Link
+                              data-test="editButton"
+                              to={{
+                                pathname:
+                                    "/dashboard/NightCab/UpdateCabRequest",
+                                state: { employeeId: row.employeeId },
+                              }}
+                            >
+                              <EditButton />
+                            </Link>
+                          )}
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </Table>
+            </CardBody>
+          </Card>
+        ) : (
+          <Card>
+            <CardBody>
+              <Alert data-test="NoNightCabRequests" color="dark">
+                {noCabRequests}
+              </Alert>
+            </CardBody>
+          </Card>
+        )}
+      </div>
+
+      <Modal
+        onHide={props.addModalclose}
+        show={props.addModalShow}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="route">{assigncab}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <Form className="Add-form" onSubmit={props.handleSubmit}>
+              <FormGroup>
+                <Label>{empId}</Label>
+                <br />
+                <Select
+                  style={{ width: "400px" }}
+                  mode="multiple"
+                  placeholder="Employee Id"
+                  required
+                  onChange={props.handleChange1}
+                >
+                  {props.status &&
+                    props.status.map((item, index) => (
+                      <Select.Option
+                        data-test="empid"
+                        key={index}
+                        value={item.employeeId}
+                      >
+                        {item.employeeId}
+                        {"/"}
+                        {item.preferredTime}
+                        {"/"}
+                        {item.destination}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </FormGroup>
+              <FormGroup>
+                <Label>{destination}</Label>
+                <br />
+                <Select
+                  style={{ width: "400px" }}
+                  mode="multiple"
+                  placeholder="Assigned Route"
+                  required
+                  onChange={props.handleChange2}
+                >
+                  {props.status &&
+                    props.status.map((item, index) => (
+                      <Select.Option
+                        data-test="destination"
+                        key={index}
+                        value={item.destination}
+                      >
+                        {item.destination}
+                      </Select.Option>
+                    ))}
+                </Select>
+              </FormGroup>
+              <FormGroup>
+                <Label>{assignedTimings}</Label>
+                <Input
+                  style={{ width: "400px" }}
+                  type="text"
+                  placeholder="Assigned Timing"
+                  id="assignedTiming"
+                  required
+                  onChange={props.onChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>{driverName}</Label>
+                <Input
+                  style={{ width: "400px" }}
+                  type="text"
+                  placeholder="Driver Name"
+                  id="driverName"
+                  required
+                  onChange={props.onChange}
+                />
+              </FormGroup>
+              <FormGroup>
+                <Label>{driverContactNumber}</Label>
+                <Input
+                  style={{ width: "400px" }}
+                  type="text"
+                  placeholder="Driver Contact Number"
+                  id="driverContactNumber"
+                  required
+                  onChange={props.onChange}
+                />
+                <FormGroup>
+                  <Label>{vehicleNumber}</Label>
+                  <Input
+                    style={{ width: "400px" }}
+                    type="text"
+                    placeholder="Vehicle Number"
+                    required
+                    id="vehicleNumber"
+                    onChange={props.onChange}
+                  />
+                </FormGroup>
+              </FormGroup>
+              <Button type="submit">{submit}</Button>
+            </Form>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </div>
+  );
+}
+
+CabRequestUI.propTypes = {
+  isLoading: PropTypes.bool,
+  status: PropTypes.array,
+  addModalopen: PropTypes.func,
+  addModalShow: PropTypes.func,
+  addModalclose: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  handleChange1: PropTypes.func,
+  handleChange2: PropTypes.func,
+  onChange: PropTypes.func,
+  handleCheckChange: PropTypes.func,
+  targetId: PropTypes.string,
+};

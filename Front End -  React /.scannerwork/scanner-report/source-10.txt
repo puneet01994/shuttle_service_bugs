@@ -1,0 +1,128 @@
+import { types } from "../types";
+import { SuccessUpdate } from "../../Components/Pages/Swal";
+import httpService from "../../Services/httpService";
+import {
+  vehicleNumberUpdate,
+  nightCabByIdUpdate,
+  nightCabUpdate,
+  userUpdate,
+  riderAccountStatusUpdate,
+  routeUpdate,
+  adminContactUpdate,
+} from "../../Services/backEndUrls";
+
+export const updateVehicleNumber = (body, t) => async (dispatch) => {
+  try {
+    await httpService.put(vehicleNumberUpdate, body).then((response) => {
+      dispatch({
+        type: types.CHANGE_VEHICLE_NO,
+        payload: body.oldVehicleNumber,
+        payload1: body.newVehicleNumber,
+      });
+      SuccessUpdate();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateNightCabById = (body, t) => async (dispatch) => {
+  try {
+    await httpService.put(nightCabByIdUpdate, body).then((response) => {
+      dispatch({
+        type: types.UPDATE_NIGHT_CAB_BY_ID,
+        payload: body,
+        payload1: body.employeeId,
+      });
+      SuccessUpdate();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateNightCab = (body, t) => async (dispatch) => {
+  try {
+    await httpService.put(nightCabUpdate, body).then((response) => {
+      SuccessUpdate();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateRiderDetail = (body, t) => async (dispatch) => {
+  try {
+    await httpService.put(userUpdate, body).then((response) => {
+      dispatch({
+        type: types.UPDATE_RIDER,
+        payload: body,
+        payload1: body.id,
+      });
+      SuccessUpdate();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateDriverDetail = (body, t) => async (dispatch) => {
+  try {
+    await httpService.put(userUpdate, body).then((response) => {
+      dispatch({
+        type: types.UPDATE_DRIVER,
+        payload: body,
+        payload1: body.id,
+      });
+      SuccessUpdate();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateEmpDetail = (body, t) => async (dispatch) => {
+  try {
+    await httpService
+      .put(riderAccountStatusUpdate + `${body.employeeId}`, body)
+      .then((response) => {
+        dispatch({
+          type: types.UPDATE_EMP_STATUS,
+          payload: body,
+          payload1: body.employeeId,
+        });
+        SuccessUpdate();
+      });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateRouteDetail = (body, t) => async (dispatch) => {
+  try {
+    await httpService.put(routeUpdate, body).then((response) => {
+      dispatch({
+        type: types.UPDATE_ROUTE,
+        payload: body,
+        payload1: body.routeId,
+      });
+      SuccessUpdate();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const updateAdminContact = (body, t) => async (dispatch) => {
+  try {
+    await httpService.put(adminContactUpdate, body).then((response) => {
+      dispatch({
+        type: types.UPDATE_CONTACT_US,
+        payload: body,
+      });
+      SuccessUpdate();
+    });
+  } catch (error) {
+    return error;
+  }
+};

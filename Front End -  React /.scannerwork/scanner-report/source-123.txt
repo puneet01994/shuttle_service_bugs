@@ -1,0 +1,162 @@
+import React from "react";
+import { shallow } from "enzyme";
+import { findByTestAtrr, testStore } from "../../../../Utils/index";
+import AdminDash from "../AdminDash";
+import Footer from "../Footer";
+import Layout from "../Layout";
+import Enzyme from "enzyme";
+import "jest-enzyme";
+import Adapter from "enzyme-adapter-react-16";
+
+Enzyme.configure({
+  adapter: new Adapter(),
+});
+describe("Admin Dash Component", () => {
+  describe("Data Recieved", () => {
+    let wrapper;
+    beforeEach(() => {
+      const props = {
+        onLogout: () => {},
+        onSendMail: () => {},
+      };
+      wrapper = shallow(<AdminDash {...props} />);
+    });
+
+    it("Should render admindash Board ", () => {
+      const admindash = findByTestAtrr(wrapper, "AdminDashDiv");
+      expect(admindash.length).toBe(1);
+    });
+  });
+});
+
+describe("Footer Component", () => {
+  describe("Data Recieved", () => {
+    let wrapper;
+    beforeEach(() => {
+      const props = {};
+      wrapper = shallow(<Footer {...props} />);
+    });
+
+    it("Should render footer component ", () => {
+      const footer = findByTestAtrr(wrapper, "Footer");
+      expect(footer.length).toBe(1);
+    });
+  });
+});
+
+const setUp = (initialState = {}) => {
+  const store = testStore(initialState);
+  const wrapper = shallow(<Layout store={store} />)
+    .childAt(0)
+    .dive();
+  return wrapper;
+};
+
+const findNodeByTestId = (wrapper, testID) => {
+  return wrapper.findWhere((node) => {
+    return node.prop("testID") === testID;
+  });
+};
+
+describe("Layout Component", () => {
+  let wrapper, mockSubmit, wrapper1;
+  beforeEach(() => {
+    mockSubmit = jest.fn();
+    const initialState = {
+      signOut: mockSubmit,
+      sendEmail: mockSubmit,
+    };
+    const initialState1 = {
+      error: "",
+      error1: "",
+      error2: "",
+      error4: "",
+      error3: "",
+      error5: "",
+      error6: "",
+    };
+    wrapper = setUp(initialState);   
+     wrapper1 = setUp(initialState1);
+
+
+  });
+
+  it("Should render without errors", () => {
+    const component = findByTestAtrr(wrapper, "layoutComponent");
+    expect(component.length).toBe(1);
+  });
+  it("Should render without errors", () => {
+
+    const component = findByTestAtrr(wrapper1, "oops");
+    console.log(component)
+    expect(component.length).toBe(1);
+  });
+
+  it("Should render without errors", () => {
+    const component = findNodeByTestId(wrapper, "admindash");
+    const historyMock = { push: jest.fn() };
+
+    const mockPreventDefault = jest.fn();
+    wrapper.setProps({ history: historyMock });
+
+    const mockEvent = {
+      preventDefault: mockPreventDefault,
+    };
+    component.props().onLogout(mockEvent);
+    component.props().onSendMail(mockEvent);
+  });
+
+  it(" should call sign out", () => {
+    const mockPreventDefault = jest.fn();
+    const historyMock = { push: jest.fn() };
+    wrapper.setProps({ history: historyMock });
+    const mockEvent = {
+      preventDefault: mockPreventDefault,
+    };
+    const string = ["/"];
+
+    wrapper.instance().signOut(mockEvent);
+    wrapper.instance().sendMail();
+    expect(mockPreventDefault).toHaveBeenCalled();
+
+    expect(historyMock.push.mock.calls[0]).toEqual(string);
+  });
+});
+
+describe("Send Email Button", () => {
+  let wrapper;
+  let mockFunc;
+  beforeEach(() => {
+    mockFunc = jest.fn();
+    const props = {
+      onSendMail: mockFunc,
+    };
+    wrapper = shallow(<AdminDash {...props} />);
+  });
+
+  it("Should emit callback on click event", () => {
+    const button = findByTestAtrr(wrapper, "buttonComponent");
+    button.simulate("click");
+    const callback = mockFunc.mock.calls.length;
+    expect(callback).toBe(1);
+  });
+});
+
+describe("Logout  Button", () => {
+  let wrapper;
+  let mockFunc;
+  beforeEach(() => {
+    mockFunc = jest.fn();
+    const props = {
+      onLogout: mockFunc,
+    };
+    wrapper = shallow(<AdminDash {...props} />);
+  });
+
+  it("Should emit callback on click event", () => {
+    const button = findByTestAtrr(wrapper, "LogoutButtonComponent");
+    button.simulate("click");
+    const callback = mockFunc.mock.calls.length;
+    expect(callback).toBe(1);
+  });
+});

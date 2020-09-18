@@ -1,0 +1,70 @@
+import React from "react";
+import "../../Styles/table.css";
+
+import { Col, Row, Table, Alert } from "reactstrap";
+import PropTypes from "prop-types";
+
+import {
+  did,
+  name,
+  origin,
+  destination,
+  time,
+  vehicleNumber,
+  status,
+  noOngoingTrips,
+} from "../../Constants/constants";
+
+/**
+ * DriverStatusUI function to dispaly the data
+ * of the driver status for the day.
+ * @param {object} props
+ *    @param {string} status1
+ */
+
+export default function DriverStatusUI(props) {
+  const { status1 } = props;
+  return status1.length > 0 ? (
+    <React.Fragment data-test="driverStatus">
+      <React.Fragment className="BigTbl">
+        <Row>
+          <Col>
+            <Table responsive striped hover>
+              <thead>
+                <tr>
+                  <th>{did}</th>
+                  <th>{name}</th>
+                  <th>{origin}</th>
+                  <th>{destination}</th>
+                  <th>{time}</th>
+                  <th>{vehicleNumber}</th>
+                  <th>{status}</th>
+                </tr>
+              </thead>
+              <tbody>
+                {props.status1.map((row) => (
+                  <tr data-test="DriverStatusRow" key={row.id}>
+                    <td>{row.driverId}</td>
+                    <td>{row.name}</td>
+                    <td>{row.origin}</td>
+                    <td>{row.destination}</td>
+                    <td>{row.tripTime}</td>
+                    <td>{row.vehicleNumber}</td>
+                    <td>{row.tripStatus}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </Table>
+          </Col>
+        </Row>
+      </React.Fragment>
+    </React.Fragment>
+  ) : (
+    <Alert data-test="NoOngoingTrip" color="dark">
+      {noOngoingTrips}
+    </Alert>
+  );
+}
+DriverStatusUI.propTypes = {
+  status1: PropTypes.array,
+};

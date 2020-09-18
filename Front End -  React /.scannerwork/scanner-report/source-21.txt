@@ -1,0 +1,271 @@
+import React, { Suspense } from "react";
+import AdminDash from "./AdminDash";
+import { Route, Switch } from "react-router-dom";
+import * as router from "react-router-dom";
+import { Container } from "reactstrap";
+import Rider from "../Rider/Rider";
+import Profile from "../Pages/Profile";
+import Driver from "../Driver/Driver";
+import UpdateRider from "../Rider/UpdateRider";
+import UpdateDriver from "../Driver/UpdateDriver";
+import Home from "../Home/Home";
+import PropTypes from "prop-types";
+import EmployeeStatus from "../Rider/EmployeeStatus";
+
+import CabHistory from "../NightCab/CabHistory";
+import UpdateCabRequest from "../NightCab/UpdateCabRequest";
+import UpdateEmployeeStatus from "../Rider/UpdateEmployeeStatus";
+
+import Trips from "../TripsRoutes/Trips";
+import Routes from "../TripsRoutes/Routes";
+import UpdateRoutes from "../TripsRoutes/UpdateRoutes";
+
+import Vehicle from "../Vehicle/Vehicle";
+
+import VehicleStatus from "../Vehicle/VehicleStatus";
+import VehicleRoutes from "../Vehicle/VehicleRoutes";
+
+import LocationList from "../TripsRoutes/LocationList";
+
+import navitems from "../../Routing/navitems";
+import { signout, sendEmail } from "../../Redux/actions/GET-API";
+import {
+  AppFooter,
+  AppHeader,
+  AppSidebar,
+  AppSidebarMinimizer,
+  AppSidebarNav2 as AppSidebarNav,
+} from "@coreui/react";
+import { connect } from "react-redux";
+import auth from "../../Routing/auth";
+import Contactus from "../Pages/Contactus";
+import UpdateContactus from "../Pages/UpdateContactus";
+import CabRequests from "../NightCab/CabRequests";
+
+import SessionStorageService from "../../Services/SessionStorageService";
+import Footer from "./Footer";
+import VehicleProfile from "../Vehicle/VehicleProfile";
+import NotFound from "../Pages/NotFound";
+import Oops from "../Pages/Oops";
+import { loading } from "../../Constants/constants";
+
+const sessionStorageService = SessionStorageService.getService();
+
+class Layout extends React.Component {
+  loading = () => (
+    <div className="animated fadeIn pt-1 text-center">{loading}</div>
+  );
+  signOut = (e) => {
+    e.preventDefault();
+    this.props.signout().then((response) => {
+      // if (response) {
+      // }
+      sessionStorageService.clearToken();
+
+    });
+    this.redirect();
+  };
+
+  redirect = () => {
+    this.props.history.push("/");
+  };
+  sendMail = () => {
+    this.props.sendEmail();
+  };
+
+  render() {
+    if (
+      this.props.error ||
+      this.props.error1 ||
+      this.props.error2 ||
+      this.props.error3 ||
+      this.props.error4 ||
+      this.props.error5 ||
+      this.props.error6
+    ) {
+      return <Oops data-test="oops" />;
+    }
+    return (
+      <div data-test="layoutComponent" className="app">
+        <AppHeader fixed>
+          <Suspense fallback={this.loading()}>
+            <AdminDash
+              testID={"admindash"}
+              data-test="admindashcomponent"
+              onLogout={(e) => this.signOut(e)}
+              onSendMail={(e) => this.sendMail(e)}
+            />
+          </Suspense>
+        </AppHeader>
+        <div className="app-body">
+          <AppSidebar fixed display="lg">
+            <AppSidebarNav
+              router={router}
+              navConfig={navitems}
+              {...this.props}
+            />
+            <AppSidebarMinimizer />
+          </AppSidebar>
+          <main className="main" style={{ backgroundColor: "#e4e5e6" }}>
+            <br />
+            <br />
+            <Container fluid>
+              <Suspense fallback={this.loading()}>
+                <Switch>
+                  <Route exact path="/dashboard" component={auth(Home)} />
+
+                  <Route
+                    exact
+                    path="/dashboard/Trips"
+                    component={auth(Trips)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/Rider"
+                    component={auth(Rider)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/Driver"
+                    component={auth(Driver)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/Driver/UpdateDriver"
+                    component={auth(UpdateDriver)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/Rider/UpdateRider"
+                    component={auth(UpdateRider)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/Contactus/UpdateContactus"
+                    component={auth(UpdateContactus)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/EmployeeStatus"
+                    component={auth(EmployeeStatus)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/EmployeeStatus/UpdateEmployeeStatus"
+                    component={auth(UpdateEmployeeStatus)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/Contactus"
+                    component={auth(Contactus)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/Routes/UpdateRoutes"
+                    component={auth(UpdateRoutes)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/Routes"
+                    component={auth(Routes)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/Vehicle"
+                    component={auth(Vehicle)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/VehicleRoutes"
+                    component={auth(VehicleRoutes)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/VehicleStatus"
+                    component={auth(VehicleStatus)}
+                  />
+
+                  <Route
+                    exact
+                    path="/dashboard/LocationList"
+                    component={auth(LocationList)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/CabRequests"
+                    component={auth(CabRequests)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/CabHistory"
+                    component={auth(CabHistory)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/NightCab/UpdateCabRequest"
+                    component={auth(UpdateCabRequest)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/Rider/:id"
+                    component={auth(Profile)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/Driver/:id"
+                    component={auth(Profile)}
+                  />
+                  <Route
+                    exact
+                    path="/dashboard/VehicleStatus/:bookingId"
+                    component={auth(VehicleProfile)}
+                  />
+                  <Route to="*" component={NotFound}>
+                    <router.Redirect to="/404" />
+                  </Route>
+                </Switch>
+              </Suspense>
+            </Container>
+          </main>
+        </div>
+        <AppFooter fixed display="lg">
+          <Footer />
+        </AppFooter>
+      </div>
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    status: state.statusTableReducer.sendEmailMsg,
+    error: state.getReducer.error,
+    error1: state.userReducer.error,
+    error2: state.statusTableReducer.error,
+    error3: state.tripReducer.error,
+    error4: state.vehicleReducer.error,
+    error5: state.routeReducer.error,
+    error6: state.homePageCardReducer.error,
+  };
+}
+Layout.propTypes = {
+  error: PropTypes.string,
+  sendEmail: PropTypes.func,
+  error1: PropTypes.string,
+  error2: PropTypes.string,
+  error3: PropTypes.string,
+  error4: PropTypes.string,
+  error5: PropTypes.string,
+  history: PropTypes.object,
+  error6: PropTypes.string,
+  signout: PropTypes.func,
+};
+
+export default connect(mapStateToProps, { signout, sendEmail })(Layout);

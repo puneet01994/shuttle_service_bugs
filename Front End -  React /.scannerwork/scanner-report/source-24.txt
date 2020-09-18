@@ -1,0 +1,112 @@
+import React from "react";
+import PropTypes from "prop-types";
+
+import CardsUI from "./CardsUI";
+
+import {
+  Card,
+  CardBody,
+  Col,
+  CardHeader,
+  Row,
+  ButtonToolbar,
+  Button,
+  ButtonGroup,
+} from "reactstrap";
+import TableUI from "./TableUI.js";
+import "../../Styles/table.css";
+import Loader from "../Pages/Loader";
+
+import {
+  employeeStatus,
+  driverStatus,
+  vehicleStatus,
+} from "../../Constants/constants";
+
+/**
+ * HomeUI to display the home page data
+ * loader to dispaly the oading process.
+ * CardsUI to display the card details.
+ * CardHeader to display the buttons to switch between the table.
+ * TableUI to display the tablular status of the employee travelling,
+ * driver details having trips and the vehicle status.
+ * @param {object} props
+ */
+
+const HomeUI = (props) => {
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="cards" className="animated fadeIn">
+      <CardsUI
+        status={props.status}
+        status1={props.status1}
+        status2={props.status2}
+        status3={props.status3}
+      />
+
+      <div className="header">
+        <Row>
+          <Col>
+            <Card>
+              <CardHeader>
+                {" "}
+                <ButtonToolbar
+                  className="float-right"
+                  aria-label="Toolbar with button groups"
+                >
+                  <ButtonGroup
+                    className="mr-3"
+                    aria-label="First group"
+                    size="sm"
+                  >
+                    <Button
+                      data-test="selectBtn"
+                      size="sm"
+                      color="outline-info"
+                      onClick={() => props.selectedTable(1)}
+                    >
+                      {employeeStatus}
+                    </Button>
+                    <Button
+                      data-test="selectBtn1"
+                      size="sm"
+                      color="outline-info"
+                      onClick={() => props.selectedTable(2)}
+                    >
+                      {driverStatus}
+                    </Button>
+                    <Button
+                      data-test="selectBtn2"
+                      size="sm"
+                      color="outline-info"
+                      onClick={() => props.selectedTable(3)}
+                    >
+                      {vehicleStatus}
+                    </Button>
+                  </ButtonGroup>
+                </ButtonToolbar>
+              </CardHeader>
+
+              <CardBody>
+                <TableUI data-test="tableUI" value={props.value} />
+              </CardBody>
+            </Card>
+          </Col>
+        </Row>
+      </div>
+    </div>
+  );
+};
+
+export default HomeUI;
+
+HomeUI.propTypes = {
+  isLoading: PropTypes.bool,
+  status: PropTypes.string,
+  status1: PropTypes.string,
+  status2: PropTypes.string,
+  status3: PropTypes.string,
+  selectedTable: PropTypes.func,
+  value: PropTypes.string,
+};

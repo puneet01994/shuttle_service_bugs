@@ -1,0 +1,20 @@
+.BigTbl1 tbody {
+    white-space: nowrap;
+    text-align: left;
+  
+  }
+  
+  .BigTbl1 {
+    display: inline-block;
+    border-collapse: collapse;
+    font-size: small;
+  }
+  
+  .BigTbl1 thead {
+    background-color: #45a2b8;
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    text-align: left;
+    white-space: nowrap;
+  }

@@ -1,0 +1,40 @@
+import React from "react";
+import { shallow } from "enzyme";
+import Auth from "../auth";
+import Enzyme from "enzyme";
+import "jest-enzyme";
+import Adapter from "enzyme-adapter-react-16";
+
+Enzyme.configure({
+  adapter: new Adapter(),
+});
+
+describe("Update Employee Status UI Component", () => {
+  let wrapper;
+  const historyMock = { push: jest.fn() };
+  beforeEach(() => {
+    const initialState = {
+      history: historyMock,
+      token: "",
+    };
+    const Component = <h1>Hola</h1>;
+    const ConditionalComponent = Auth(Component);
+    wrapper = shallow(<ConditionalComponent {...initialState} />);
+  });
+
+  it("Should render the component only when auth prop is true", () => {
+    const string = ["/"];
+
+    expect(wrapper).not.toBe(null);
+    expect(historyMock.push.mock.calls[0]).toEqual(string);
+  });
+ 
+  it(" should call componentdidupdate", () => {
+    const componentDidUpdate = jest.spyOn(
+      wrapper.instance(),
+      "componentDidUpdate"
+    );
+    wrapper.instance().componentDidUpdate();
+    expect(componentDidUpdate).toHaveBeenCalled();
+  });
+});

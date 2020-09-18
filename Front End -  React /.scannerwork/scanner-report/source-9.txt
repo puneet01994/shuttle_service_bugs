@@ -1,0 +1,485 @@
+import axios from "axios";
+import { types } from "../types";
+import httpService from "../../Services/httpService";
+import {
+  getUserDetails,
+  vehicleProfile,
+  signupMail,
+  getClientLocation,
+  adminContact,
+  nightCabRequest,
+  nightCabRequestHistory,
+  tripDetailsByDate,
+  vehicleStatusByDate,
+  homeStatusTable,
+  homePageCards,
+  riderAccountStatus,
+  vehicleDetails,
+  vehicleRouteDetails,
+  routeDetails,
+  riderByIdDetails,
+  driverByIdDetails,
+  riderAccountStatusById,
+  routeByIdDetails,
+  riderProfile,
+  signOut,
+} from "../../Services/backEndUrls";
+import { SuccessMsg } from "../../Components/Pages/Swal";
+import SessionStorageService from "../../Services/SessionStorageService";
+
+const sessionStorageService = SessionStorageService.getService();
+
+export const sendEmail = () => async (dispatch) => {
+  await httpService
+    .get(signupMail, { timeout: 10000 })
+    .then((response) => {
+      dispatch(
+        {
+          type: types.SEND_EMAIL,
+          payload: response.data.Message,
+        },
+        SuccessMsg(response.data.Message)
+      );
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const signout = () => async (dispatch) => {
+  const token = sessionStorageService.getDeviceToken();
+  await httpService
+    .post(signOut, { deviceToken: token }, { timeout: 10000 })
+    .then((response) => {
+      dispatch({
+        type: types.LOG_OUT,
+      });
+    });
+};
+
+export const getLocation = () => {
+  return (dispatch) => {
+    return httpService
+      .get(getClientLocation, { timeout: 10000 })
+      .then((response) => {
+        dispatch({
+          type: types.GET_LOCATION,
+          payload: response.data.payload,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: types.ERROR,
+          payload: error.message,
+        });
+      });
+  };
+};
+
+export const getUserProfile = (id) => {
+  return (dispatch) => {
+    return httpService
+      .get(riderProfile + id, { timeout: 10000 })
+      .then((response) => {
+        dispatch({
+          type: types.GET_USER_PROFILE,
+          payload: response.data.payload.content,
+          payload1: response.data.payload.totalPages,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: types.ERROR,
+          payload: error.message,
+        });
+      });
+  };
+};
+
+export const getVehicleProfile = (bookingId) => {
+  return (dispatch) => {
+    return httpService
+      .get(vehicleProfile + bookingId, { timeout: 10000 })
+      .then((response) => {
+        dispatch({
+          type: types.GET_VEHICLE_PROFILE,
+          payload: response.data.payload,
+        });
+      })
+      .catch((error) => {
+        dispatch({
+          type: types.ERROR,
+          payload: error.message,
+        });
+      });
+  };
+};
+
+export const getContactus = (t) => async (dispatch) => {
+  await httpService
+    .get(adminContact, { timeout: 10000 })
+    .then((response) => {
+      dispatch({
+        type: types.GET_CONTACT_US,
+        payload: response.data.payload,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getNightCabRequests = (t) => async (dispatch) => {
+  await axios
+    .get(nightCabRequest, { timeout: 10000 })
+    .then((response) => {
+      dispatch({
+        type: types.NIGHT_CAB_REQUESTS,
+        payload: response.data.payload,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getNightCabHistory = (
+  Date5,
+  Date6,
+  t,
+  name,
+  no,
+  Size,
+  order
+) => async (dispatch) => {
+  await httpService
+    .get(
+      nightCabRequestHistory + Date5 + "/" + Date6,
+      { timeout: 10000 },
+      {
+        params: { sortBy: name, pageNo: no, pageSize: Size, orderBy: order },
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.NIGHT_CAB_HISTORY,
+        payload: response.data.payload.pages.content,
+        payload1: response.data.payload.pages.totalPages,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getTripByDate = (Date1, Date2, t, name, no, Size, order) => async (
+  dispatch
+) => {
+  await httpService
+    .get(
+      tripDetailsByDate + Date1 + "/" + Date2,
+      { timeout: 10000 },
+      {
+        params: { sortBy: name, pageNo: no, pageSize: Size, orderBy: order },
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_TRIP_BY_DATE,
+        payload: response.data.payload.pages.content,
+
+        payload1: response.data.payload.pages.totalPages,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getStatusByDate = (
+  Date3,
+  Date4,
+  t,
+  name,
+  no,
+  Size,
+  order
+) => async (dispatch) => {
+  await httpService
+    .get(
+      vehicleStatusByDate + Date3 + "/" + Date4,
+      { timeout: 10000 },
+      {
+        params: { sortBy: name, pageNo: no, pageSize: Size, orderBy: order },
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_STATUS_BY_DATE,
+        payload: response.data.payload.pages.content,
+        payload1: response.data.payload.pages.totalPages,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getStatusTable = (t) => async (dispatch) => {
+  await httpService
+    .get(homeStatusTable, { timeout: 10000 })
+    .then((response) => {
+      dispatch({
+        type: types.GET_STATUS_TABLE,
+        payload: response.data.payload.driverStatus,
+        payload1: response.data.payload.bookingStatus,
+        payload2: response.data.payload.vehiclesHavingTrips,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getHomePageCard = () => async (dispatch) => {
+  await httpService
+    .get(homePageCards)
+    .then((response) => {
+      dispatch({
+        type: types.HOME_PAGE_CARD,
+        payload: response.data.payload.employeeTripCard,
+        payload1: response.data.payload.upcomingTripCard,
+        payload2: response.data.payload.completedTripCard,
+        payload3: response.data.payload.totalTripCard,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getuserinfo = (t, name, no, Size, order) => async (dispatch) => {
+  await httpService
+    .get(
+      getUserDetails,
+      { timeout: 10000 },
+      {
+        params: { sortBy: name, pageNo: no, pageSize: Size, orderBy: order },
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_USER_INFO,
+        payload: response.data.payload.employeeDetails.content,
+        payload1: response.data.payload.employeeDetails.totalPages,
+        payload2: response.data.payload.driverDetails.content,
+        payload3: response.data.payload.driverDetails.totalPages,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getEmployeeStatus = (t, name, no, Size, order) => async (
+  dispatch
+) => {
+  await httpService
+    .get(
+      riderAccountStatus,
+      { timeout: 10000 },
+      {
+        params: { sortBy: name, pageNo: no, pageSize: Size, orderBy: order },
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_EMPLOYEE_STATUS,
+        payload: response.data.payload.content,
+        payload1: response.data.payload.totalPages,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getVehicleInfo = (t, name, no, Size, order) => async (
+  dispatch
+) => {
+  await httpService
+    .get(
+      vehicleDetails,
+      { timeout: 10000 },
+      {
+        params: { sortBy: name, pageNo: no, pageSize: Size, orderBy: order },
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_VEHICLE_INFO,
+        payload: response.data.payload.pagedResult.content,
+        payload1: response.data.payload.pagedResult.totalPages,
+        payload2: response.data.payload.allResult,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getVehicleRoute = (t) => async (dispatch) => {
+  await httpService
+    .get(vehicleRouteDetails, { timeout: 10000 })
+    .then((response) => {
+      dispatch({
+        type: types.GET_VEH_ROUTES,
+        payload: response.data.payload.content,
+        payload1: response.data.payload.totalPages,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getRouteinfo = (t, name, no, Size, order) => async (dispatch) => {
+  await httpService
+    .get(
+      routeDetails,
+      { timeout: 10000 },
+      {
+        params: { sortBy: name, pageNo: no, pageSize: Size, orderBy: order },
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_ROUTE_INFO,
+        payload: response.data.payload.pagedResult.content,
+        payload1: response.data.payload.pagedResult.totalPages,
+        payload2: response.data.payload.allResult,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getRiderById = (Eid, t) => async (dispatch) => {
+  await httpService
+    .get(riderByIdDetails + `${Eid}`, { timeout: 10000 })
+    .then((response) => {
+      dispatch({
+        type: types.GET_RIDER_BY_ID,
+        payload: response.data.payload,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getDriverById = (Eid, t) => async (dispatch) => {
+  await httpService
+    .get(driverByIdDetails + `${Eid}`, { timeout: 10000 })
+    .then((response) => {
+      dispatch({
+        type: types.GET_DRIVER_BY_ID,
+        payload: response.data.payload,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getEmpById = (Eid, t) => async (dispatch) => {
+  await httpService
+    .get(
+      riderAccountStatusById + `${Eid}`,
+      { timeout: 10000 },
+      {
+        employeeId: Eid,
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_EMP_BY_ID,
+        payload: response.data.payload,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};
+
+export const getRouteById = (routeId, t) => async (dispatch) => {
+  await httpService
+    .get(
+      routeByIdDetails + `${routeId}`,
+      { timeout: 10000 },
+      {
+        routeId: routeId,
+      }
+    )
+    .then((response) => {
+      dispatch({
+        type: types.GET_ROUTE_BY_ID,
+        payload: response.data.payload,
+      });
+    })
+    .catch((error) => {
+      dispatch({
+        type: types.ERROR,
+        payload: error.message,
+      });
+    });
+};

@@ -1,0 +1,28 @@
+import { types } from "../types";
+
+const initialState = {
+  upcomingTrips: "",
+  completedTrips: "",
+  ongoingTrips: "",
+  totalTrips: "",
+};
+
+export default (state = initialState, action) => {
+  if (action.type === types.HOME_PAGE_CARD) {
+    return {
+      ...state,
+      upcomingTrips: action.payload1,
+      completedTrips: action.payload2,
+
+      ongoingTrips: action.payload,
+      totalTrips: action.payload3,
+      error:""
+    };
+  } else if (action.type === types.ERROR) {
+    return {
+      error: action.payload,
+    };
+  } else {
+    return state;
+  }
+};

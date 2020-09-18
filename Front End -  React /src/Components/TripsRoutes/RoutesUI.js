@@ -1,0 +1,171 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Button, Modal } from "react-bootstrap";
+import { Select } from "antd";
+import TableHeader from "../Pages/TableHeader";
+
+import "antd/dist/antd.css";
+
+import {
+  Card,
+  CardBody,
+  Table,
+  Form,
+  FormGroup,
+  Label,
+  Input,
+} from "reactstrap";
+import { EditButton, DeleteButton } from "../Pages/Buttons";
+import "../../Styles/table.css";
+import Loader from "../Pages/Loader";
+import { routeDetails, Rid, route, routeTimings, addRoutes, submit } from "../../Constants/constants";
+
+/**
+ * to dispaly the route details
+ * modal to edit the routr details
+ * option to edit and delete the routes
+ * @param {object} props 
+ */
+export default function RoutesUI(props) {
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="Route" className="container">
+      <h3>{routeDetails}</h3>
+
+      <div className="BigTbl">
+        <Card>
+          <TableHeader
+            addModalopen={props.addModalopen}
+            handleTableChange={props.handleTableChange}
+            onChange={props.handleTableChange}
+            val={props.val}
+            fileName={props.fileName}
+            title={props.title}
+          />
+          <CardBody>
+            <Table
+              responsive
+              striped
+              hover
+              className="table-responsive"
+              id="RouteTbl"
+            >
+              <thead>
+                <tr>
+                  <th>{Rid}</th>
+                  <th>{route}</th>
+                  <th>{routeTimings}</th>
+
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {props.status1 &&
+                  props.status1.map((row) => (
+                    <tr
+                      data-test="routesRow"
+                      key={row.routeId}
+                      onClick={(e) => props.handleCheckChange(row.routeId)}
+                    >
+                      <td>{row.routeId}</td>
+                      <td>{row.route}</td>
+                      <td>{row.routeTimings}</td>
+                      <td className="custom-td">
+                        {row.routeId === props.targetId && (
+                          <DeleteButton
+                            data-test="deleteButton"
+                            delete={props.delete}
+                            targetId={props.targetId}
+                          />
+                        )}
+
+                        {row.routeId === props.targetId && (
+                          <Link
+                            data-test="editButton"
+                            to={{
+                              pathname: "/dashboard/Routes/UpdateRoutes",
+                              state: { routeId: row.routeId },
+                            }}
+                          >
+                            <EditButton />
+                          </Link>
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </div>
+
+      <Modal
+        onHide={props.addModalclose}
+        show={props.addModalShow}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title id="route">{addRoutes}</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <div>
+            <Form className="Add-form" onSubmit={props.handleSubmit}>
+              <FormGroup>
+                <Label for="Routes">{route}</Label>
+                <br />
+                <Select
+                  mode="multiple"
+                  placeholder="Routes"
+                  required
+                  onChange={props.handleChange}
+                >
+                  {props.routesArr.map((item, index) => (
+                    <Select.Option key={index} value={item.location}>
+                      {item.location}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </FormGroup>
+              <FormGroup>
+                <Label for="routes">{routeTimings}</Label>
+                <Input
+                  type="int"
+                  placeholder="Route Timings"
+                  id="routeTimings"
+                  required
+                  onChange={props.onChange}
+                />
+              </FormGroup>
+
+              <Button type="submit">{submit}</Button>
+            </Form>
+          </div>
+        </Modal.Body>
+      </Modal>
+    </div>
+  );
+}
+
+RoutesUI.propTypes = {
+  isLoading: PropTypes.bool,
+  status1: PropTypes.array,
+  routedetails: PropTypes.object,
+  addModalopen: PropTypes.func,
+  addModalShow: PropTypes.bool,
+  addModalclose: PropTypes.func,
+  handleCheckChange: PropTypes.func,
+  deleteRoute: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  handleChange: PropTypes.func,
+  onChange: PropTypes.func,
+  handleTableChange: PropTypes.func,
+  val: PropTypes.number,
+  fileName: PropTypes.string,
+  title: PropTypes.string,
+  targetId: PropTypes.string,
+  delete: PropTypes.func,
+  routesArr: PropTypes.array,
+};

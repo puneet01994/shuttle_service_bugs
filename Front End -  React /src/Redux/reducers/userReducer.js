@@ -1,0 +1,151 @@
+import { types } from "../types";
+import SessionStorageService from "../../Services/SessionStorageService";
+
+const initialState = {
+  riderData: [],
+  driverData: [],
+  employeeStatus: [],
+  tokken: "",
+  boolean: false,
+  riderTotalPages: null,
+  driverTotalPages: null,
+};
+
+const sessionStorageService = SessionStorageService.getService();
+export default (state = initialState, action) => {
+  switch (action.type) {
+  case types.GET_USER_INFO:
+    return {
+      ...state,
+
+      riderData: action.payload.employeeDetails,
+      driverData: action.payload.driverDetails,
+      error: "",
+    };
+
+  case types.LOGIN:
+    return {
+      ...state,
+      tokken: action.payload,
+      boolean: action.payload1,
+    };
+
+  case types.LOG_OUT:
+    sessionStorageService.clearToken();
+
+    return {
+      ...state,
+      boolean: false,
+    };
+  case types.GET_EMPLOYEE_STATUS:
+    return {
+      ...state,
+      employeeStatus: action.payload,
+      empTotalPages: action.payload1,
+      error: "",
+    };
+  case types.GET_USER_PROFILE:
+    return {
+      ...state,
+      userProfile: action.payload,
+      userProfileTotalPages: action.payload1,
+      error: "",
+    };
+
+  case types.DELETE_RIDER:
+    var deleteIndex;
+    state.riderData.filter((index, i) => {
+      if (index.id === action.payload) {
+        return (deleteIndex = i);
+      } else return 0;
+    });
+
+    var result = state.riderData.filter((index, i) => {
+      return i !== deleteIndex;
+    });
+    return {
+      ...state,
+      riderData: result,
+      error: "",
+    };
+  case types.DELETE_DRIVER:
+    var deleteIndexD;
+    state.driverData.filter((index, i) => {
+      if (index.id === action.payload) {
+        return (deleteIndexD = i);
+      } else return 0;
+    });
+    var result1 = state.driverData.filter((index, i) => {
+      return i !== deleteIndexD;
+    });
+    return {
+      ...state,
+      driverData: result1,
+      error: "",
+    };
+  case types.POST_RIDER_INFO: {
+    return {
+      ...state,
+      riderData: [...state.riderData, action.payload],
+    };
+  }
+
+  case types.POST_DRIVER_INFO: {
+    return {
+      ...state,
+      driverData: [...state.driverData, action.payload],
+    };
+  }
+
+  case types.UPDATE_RIDER:
+    let riderdata = [...state.riderData];
+    riderdata = riderdata.map((item, index) => {
+      if (item.id === action.payload1) {
+        item = action.payload;
+        return item;
+      }
+      return item;
+    });
+    return {
+      ...state,
+      riderData: riderdata,
+    };
+
+  case types.UPDATE_DRIVER:
+    let driverdata = [...state.driverData];
+    driverdata = driverdata.map((item, index) => {
+      if (item.id === action.payload1) {
+        item = action.payload;
+        return item;
+      }
+      return item;
+    });
+
+    return {
+      ...state,
+      driverData: driverdata,
+    };
+
+  case types.UPDATE_EMP_STATUS:
+    let empstatus = [...state.employeeStatus];
+    empstatus = empstatus.map((item, index) => {
+      if (item.employeeId === action.payload1) {
+        item = action.payload;
+        return item;
+      }
+      return item;
+    });
+    return {
+      ...state,
+      employeeStatus: empstatus,
+    };
+
+  case types.ERROR:
+    return {
+      error: action.payload,
+    };
+
+  default:
+    return state;
+  }
+};

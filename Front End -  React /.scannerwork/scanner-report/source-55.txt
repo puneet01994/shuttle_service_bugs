@@ -1,0 +1,89 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { Form, FormGroup, Label, Input, Card, CardBody } from "reactstrap";
+
+import "../../Styles/table.css";
+import Loader from "../Pages/Loader";
+import { updateEmployeeDetails, empId, empName, accountStatus, active, blocked } from "../../Constants/constants";
+
+/**
+ * update the employee status
+ * @param {object} props 
+ */
+export default function UpdateEmployeeStatusUI(props) {
+  const { empStatus } = props;
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="updateEmployeeStatus" className="Tbl">
+      <h1 className="Add-form">{updateEmployeeDetails}</h1>
+      <Card>
+        <CardBody>
+          <Form className="Add-form" onSubmit={props.submitHandle}>
+            <FormGroup>
+              <Label for="Employee_id">{empId}</Label>
+              <Input
+                style={{ width: "400px" }}
+                placeholder="Employee Id"
+                type="text"
+                id="employeeId"
+                disabled
+                value={empStatus.employeeId}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="name">{empName}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="textarea"
+                placeholder="Employee Name"
+                id="name"
+                disabled
+                value={empStatus.name}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup tag="fieldset">
+              <legend>{accountStatus}</legend>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    id="ACTIVE"
+                    value="ACTIVE"
+                    checked={empStatus.accountStatus === "ACTIVE"}
+                    onChange={props.handleOptionChange}
+                  />{" "}
+                  {active}
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    id="BLOCKED"
+                    value="BLOCKED"
+                    checked={empStatus.accountStatus === "BLOCKED"}
+                    onChange={props.handleOptionChange}
+                  />{" "}
+                  {blocked}
+                </Label>
+              </FormGroup>
+            </FormGroup>
+
+            <input type="submit" className="button" value="submit" />
+          </Form>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}
+
+UpdateEmployeeStatusUI.propTypes = {
+  isLoading: PropTypes.bool,
+  empStatus: PropTypes.element,
+  submitHandle: PropTypes.func,
+  handleChange: PropTypes.func,
+  handleOptionChange: PropTypes.func,
+};

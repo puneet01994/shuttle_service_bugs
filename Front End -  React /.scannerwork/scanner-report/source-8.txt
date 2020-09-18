@@ -1,0 +1,173 @@
+import axios from "axios";
+import firebase from "firebase/";
+
+import { types } from "../types";
+import { SuccessAlert, SuccessMsg } from "../../Components/Pages/Swal";
+import httpService from "../../Services/httpService";
+import {
+  nightCabById,
+  signin,
+  userAdd,
+  locationAdd,
+  routeAdd,
+  vehicleAdd,
+  vehicleRouteAdd,
+} from "../../Services/backEndUrls";
+
+import SessionStorageService from "../../Services/SessionStorageService";
+
+const sessionStorageService = SessionStorageService.getService();
+
+export const initializeFirebase = () => {
+  firebase.initializeApp({
+    messagingSenderId: "90763504780",
+    apiKey: "AIzaSyAhJFp4AdRAIF6Pb_QbP9RXzczO1YhXzOs",
+    authDomain: "shuttle-service-8e8e7.firebaseapp.com",
+    databaseURL: "https://shuttle-service-8e8e7.firebaseio.com",
+    projectId: "shuttle-service-8e8e7",
+    storageBucket: "shuttle-service-8e8e7.appspot.com",
+    appId: "1:90763504780:web:2e86758c4edea982865fa9",
+    measurementId: "G-22LEMTYLEK",
+  });
+
+  navigator.serviceWorker
+    .register("../public/firebase-messaging-sw.js")
+    .then((registration) => {
+      firebase.messaging().useServiceWorker(registration);
+    });
+};
+
+export const askForPermissioToReceiveNotifications = () => async () => {
+  try {
+    const messaging = firebase.messaging();
+    await messaging.requestPermission();
+    const token = await messaging.getToken();
+    sessionStorageService.setDeviceToken(token);
+
+    return token;
+  } catch (error) {
+    console.error(error);
+  }
+};
+
+export const getNightCabById = (employeeId, t) => async (dispatch) => {
+  try {
+    await httpService.post(nightCabById + `${employeeId}`).then((response) => {
+      dispatch({
+        type: types.EDIT_NIGHT_CAB_BY_ID,
+        payload: response.data.payload,
+      });
+    });
+  } catch (error) {
+    dispatch({
+      type: types.ERROR,
+      payload: error.message,
+    });
+  }
+};
+
+export const login = (e) => async (dispatch) => {
+  try {
+    await axios.post(signin, e).then((response) => {
+      sessionStorageService.setAccessToken(response.data.payload);
+      sessionStorageService.setRefreshToken(response.data.payload);
+      dispatch({
+        type: types.LOGIN,
+        payload: response.data.payload.accessToken,
+        payload1: response.data.payload.boolean,
+      });
+      SuccessMsg();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+
+export const postuserInfo = (e, t) => async (dispatch) => {
+  try {
+    await httpService.post(userAdd, e).then((response) => {
+      if (e.role === "EMPLOYEE") {
+        dispatch({
+          type: types.POST_RIDER_INFO,
+          payload: response.data.payload,
+        });
+        SuccessAlert();
+      }
+      if (e.role === "DRIVER") {
+        dispatch({
+          type: types.POST_DRIVER_INFO,
+          payload: response.data.payload,
+        });
+        SuccessAlert();
+      }
+    });
+  } catch (error) {
+    dispatch({
+      type: types.ERROR,
+      payload: error.message,
+    });
+    return error;
+  }
+};
+
+//201
+export const postLocation = (e, t) => async (dispatch) => {
+  try {
+    await httpService.post(locationAdd, e).then((response) => {
+      dispatch({
+        type: types.POST_LOCATION,
+        payload: response.data.payload,
+      });
+      SuccessAlert();
+    });
+  } catch (error) {
+    dispatch({
+      type: types.ERROR_DISPATCH,
+      payload: error.response,
+    });
+    //return error;
+  }
+};
+
+//201
+export const postRouteInfo = (e, t) => async (dispatch) => {
+  try {
+    await httpService.post(routeAdd, e).then((response) => {
+      dispatch({
+        type: types.POST_ROUTE_INFO,
+        payload: response.data.payload,
+      });
+      SuccessAlert();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+//201
+export const postVehicleInfo = (e, t) => async (dispatch) => {
+  try {
+    await httpService.post(vehicleAdd, e).then((response) => {
+      dispatch({
+        type: types.POST_VEHICLE_INFO,
+        payload: response.data.payload,
+      });
+      SuccessAlert();
+    });
+  } catch (error) {
+    return error;
+  }
+};
+//201
+export const postVehicleRouteInfo = (e, t) => async (dispatch) => {
+  try {
+    await httpService.post(vehicleRouteAdd, e).then((response) => {
+      dispatch({
+        type: types.POST_VEHICLE_ROUTE_INFO,
+        payload: response.data.payload,
+      });
+      SuccessAlert();
+    });
+  } catch (error) {
+    return error;
+  }
+};

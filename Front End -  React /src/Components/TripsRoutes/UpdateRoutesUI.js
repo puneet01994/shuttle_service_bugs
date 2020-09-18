@@ -1,0 +1,86 @@
+import React from "react";
+import PropTypes from "prop-types";
+
+import { Form, FormGroup, Label, Input, Card, CardBody } from "reactstrap";
+import { Select } from "antd";
+
+import "antd/dist/antd.css";
+import "../../Styles/table.css";
+import Loader from "../Pages/Loader";
+import { updateRouteDetails, Rid, route, routeTimings } from "../../Constants/constants";
+
+/**
+ * update the routes
+ */
+export default function UpdateRoutesUI(props) {
+  const { updateRoute } = props;
+
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="updateRoute" className="Tbl">
+      <h1 className="Add-form">{updateRouteDetails}</h1>
+      <Card>
+        <CardBody>
+          <Form className="Add-form" onSubmit={props.submitHandle}>
+            <FormGroup>
+              <Label for="Route_id">{Rid}</Label>
+              <Input
+                style={{ width: "400px" }}
+                placeholder="Route Id"
+                type="text"
+                id="routeId"
+                disabled
+                required
+                value={updateRoute.routeId}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="Routes">{route}</Label>
+              <br />
+              <Select
+                style={{ width: "400px" }}
+                mode="multiple"
+                placeholder="Routes"
+                required
+                value={updateRoute.route}
+                onChange={props.handleSelect}
+              >
+                {props.routesArr.map((item, index) => (
+                  <Select.Option key={index} value={item.location}>
+                    {item.location}
+                  </Select.Option>
+                ))}
+              </Select>
+            </FormGroup>
+            <FormGroup>
+              <Label for="routes">{routeTimings}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="int"
+                placeholder="Route Timings"
+                id="routeTimings"
+                required
+                value={updateRoute.routeTimings}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+
+            <input type="submit" className="button" value="submit" />
+          </Form>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}
+
+UpdateRoutesUI.propTypes = {
+  isLoading: PropTypes.bool,
+  updateRoute: PropTypes.object,
+  submitHandle: PropTypes.func,
+  handleChange: PropTypes.func,
+  handleSelect: PropTypes.func,
+  routesArr: PropTypes.array,
+};

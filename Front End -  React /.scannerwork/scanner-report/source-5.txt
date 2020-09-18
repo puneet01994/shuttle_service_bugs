@@ -1,0 +1,97 @@
+import axios from "axios";
+import SessionStorageService from "./SessionStorageService";
+import { authorize } from "./backEndUrls";
+import Logger from "../Components/Pages/Logger";
+import swal from "sweetalert";
+
+axios.defaults.baseURL = "http://0840790a59f3.ngrok.io";
+
+const sessionStorageService = SessionStorageService.getService();
+const isHandlerEnabled = (config = {}) => {
+  // eslint-disable-next-line no-prototype-builtins
+  return config.hasOwnProperty("handlerEnabled") && !config.handlerEnabled
+    ? false
+    : true;
+};
+export const newAcceessToken = (originalRequest) => {
+  const refreshToken = sessionStorageService.getRefreshToken();
+  const accessToken = sessionStorageService.getAccessToken();
+
+  return axios
+    .post(authorize, {
+      refreshToken: refreshToken,
+      accessToken: accessToken,
+    })
+    .then((response) => {
+      response.status === 200 &&
+        sessionStorageService.setAccessToken(response.data.payload);
+      return axios(originalRequest);
+    });
+};
+
+axios.interceptors.request.use((request) => requestHandler(request));
+
+const requestHandler = (request) => {
+  const at = sessionStorageService.getAccessToken();
+
+  if (isHandlerEnabled(request)) {
+    request.headers["Authorization"] = at;
+  }
+  return request;
+};
+
+axios.interceptors.response.use(
+  (response) => successHandler(response),
+  (error) => errorHandler(error)
+);
+
+const successHandler = (response) => {
+  Logger.log("Data from API -", response);
+  return response;
+};
+
+export const errorHandler = (error) => {
+  if (isHandlerEnabled(error.config)) {
+    var originalRequest = error.response.config;
+    if (
+      error.response.config.url === "/Authorize" &&
+      error.response.status === 401
+    ) {
+      Logger.error("Data from API -", error);
+
+      swal({
+        title: "Session Expired",
+        text:
+          "Your session has expired.You will be redirected to the login page",
+        type: "warning",
+      });
+      window.location = "/";
+    }
+
+    if (error.response.status === 401 && !originalRequest._retry) {
+      originalRequest._retry = true;
+
+      newAcceessToken(originalRequest);
+    }
+
+    if (
+      error.response.status === 400 ||
+      error.response.status === 409 ||
+      error.response.status === 500
+    ) {
+      swal({
+        title: error.response.data.message,
+        text: error.response.data.details[0],
+        icon: "warning",
+        button: "OK",
+      });
+    }
+  } else return Promise.reject({ ...error });
+};
+
+export default {
+  get: axios.get,
+  put: axios.put,
+  post: axios.post,
+  delete: axios.delete,
+};

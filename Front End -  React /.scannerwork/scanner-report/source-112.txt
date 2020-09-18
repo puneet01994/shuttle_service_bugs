@@ -1,0 +1,35 @@
+import React from "react";
+import SessionStorageService from "../Services/SessionStorageService";
+import PropTypes from "prop-types";
+
+export default function Auth(ComposedComponent) {
+  const sessionStorageService = SessionStorageService.getService();
+  var token = sessionStorageService.getAccessToken();
+
+  class Authenticate extends React.Component {
+    componentDidMount() {
+      this.checkAuth();
+    }
+
+    componentDidUpdate() {
+      this.checkAuth();
+    }
+
+    checkAuth = () => {
+      if (!token) {
+        this.props.history.push("/");
+      }
+    };
+    render() {
+      return (
+        <ComposedComponent data-test="composedComponent" {...this.props} />
+      );
+    }
+  }
+
+  Authenticate.propTypes = {
+    history: PropTypes.object,
+  };
+  return Authenticate;
+
+}

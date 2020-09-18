@@ -1,0 +1,150 @@
+import React from "react";
+import PropTypes from "prop-types";
+
+import { Form, FormGroup, Label, Input, Button } from "reactstrap";
+import { Modal } from "react-bootstrap";
+
+import "../../Styles/table.css";
+
+import {
+  name,
+  email,
+  mobileNumber,
+  managerId,
+  gender,
+  male,
+  female,
+  submit,
+} from "../../Constants/constants";
+
+/**Form to add new employee or driver */
+export default function ModalForm(props) {
+  return (
+    <Modal
+      data-test="modalForm"
+      onHide={props.addModalclose}
+      show={props.addModalShow}
+      size="lg"
+      centered
+    >
+      <Modal.Header closeButton>
+        <Modal.Title>{props.title}</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <>
+          <Form className="Add-form" onSubmit={props.handleSubmit}>
+            <FormGroup>
+              <Label for="name">{name}</Label>
+              <Input
+                style={{ width: "400px" }}
+                placeholder="Name"
+                type="text"
+                id="name"
+                required
+                value={props.value}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="Id">{props.label}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                placeholder={props.label}
+                id="id"
+                required
+                value={props.value}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="Email id">{email}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="email"
+                placeholder="Email"
+                id="emailId"
+                required
+                value={props.value}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label for="PhoneNo.">{mobileNumber}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                placeholder="Contact No."
+                id="contactNumber"
+                required
+                value={props.value}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            {props.ManagerId && (
+              <FormGroup data-test="extraManagerIdField">
+                <Label for="Eid">{managerId}</Label>
+                <Input
+                  style={{ width: "400px" }}
+                  type="text"
+                  placeholder="Manager Id"
+                  id="managerId"
+                  required
+                  value={props.value}
+                  onChange={props.handleChange}
+                />
+              </FormGroup>
+            )}
+
+            <FormGroup tag="fieldset">
+              <legend>{gender}</legend>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    id="MALE"
+                    value="MALE"
+                    checked={props.gender === "MALE"}
+                    onChange={props.handleOptionChange}
+                  />{" "}
+                  {male}{" "}
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    id="FEMALE"
+                    value="FEMALE"
+                    checked={props.gender === "FEMALE"}
+                    onChange={props.handleOptionChange}
+                  />{" "}
+                  {female}
+                </Label>
+              </FormGroup>
+            </FormGroup>
+
+            <Button className="button" type="submit">
+              {submit}
+            </Button>
+          </Form>
+        </>
+      </Modal.Body>
+    </Modal>
+  );
+}
+
+ModalForm.propTypes = {
+  addModalShow: PropTypes.func,
+  addModalclose: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  handleChange: PropTypes.func,
+  handleOptionChange: PropTypes.func,
+  title: PropTypes.string,
+  gender: PropTypes.string,
+  label: PropTypes.string,
+  value: PropTypes.string,
+  ManagerId: PropTypes.string,
+};

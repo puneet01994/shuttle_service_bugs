@@ -1,0 +1,158 @@
+import React from "react";
+import { Link } from "react-router-dom";
+import PropTypes from "prop-types";
+import { Card, Table, CardBody } from "reactstrap";
+import ModalForm from "../Driver/ModalForm";
+import { EditButton, DeleteButton } from "../Pages/Buttons";
+import "../../Styles/table.css";
+import Loader from "../Pages/Loader";
+import TableHeader from "../Pages/TableHeader";
+import {
+  employeeDetails,
+  eid,
+  name,
+  email,
+  mobileNumber,
+  gender,
+  managerId,
+  view,
+} from "../../Constants/constants";
+import ErrorBoundary from "../Pages/ErrorBoundary";
+
+/**
+ * RiderUI function to display th employee data in tabular form
+ * and option to edit and delete employee.
+ * TableHeader consist of options to add new rider,pagination and
+ * sort options according to id and name.
+ * ModalForm is pop-up form to add new rider.
+ * @param {object} props
+ *    @param {bool} isLoading
+ */
+
+export default function RiderUI(props) {
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="RiderTable" className="container">
+      <h3>{employeeDetails}</h3>
+
+      <div className="BigTbl">
+        <Card>
+          <ErrorBoundary>
+            <TableHeader
+              addModalopen={props.addModalopen}
+              handleTableChange={props.handleTableChange}
+              onChange={props.handleTableChange}
+              val={props.val}
+              title={props.title}
+            />
+          </ErrorBoundary>
+
+          <CardBody>
+            <Table responsive striped hover>
+              <thead>
+                <tr>
+                  <th>{eid}</th>
+                  <th>{name}</th>
+                  <th>{email}</th>
+                  <th>{mobileNumber}</th>
+                  <th>{gender}</th>
+                  <th>{managerId}</th>
+                  <th></th>
+                </tr>
+              </thead>
+              <tbody>
+                {props.status1 &&
+                  props.status1.map((row) => (
+                    <tr
+                      data-test="RiderRow"
+                      id="checkChange"
+                      key={row.id}
+                      onClick={(e) => props.handlecheckChange(row.id)}
+                    >
+                      <td>{row.id}</td>
+                      <td>{row.name}</td>
+                      <td>{row.emailId}</td>
+                      <td>{row.contactNumber}</td>
+                      <td>{row.gender}</td>
+                      <td>{row.managerId}</td>
+
+                      <td>
+                        {""}
+                        {row.id === props.targetId && (
+                          <DeleteButton
+                            data-test="deleteButton"
+                            delete={props.delete}
+                            targetId={props.targetId}
+                          />
+                        )}{" "}
+                        {row.id === props.targetId && (
+                          <div>
+                            <Link
+                              data-test="editButton"
+                              to={{
+                                pathname: "/dashboard/Rider/Updaterider",
+                                state: { id: props.targetId },
+                              }}
+                            >
+                              <EditButton />
+                            </Link>
+                          </div>
+                        )}{" "}
+                        {row.id === props.targetId && (
+                          <div>
+                            <Link
+                              to={{
+                                pathname: `/dashboard/Rider/${props.targetId}`,
+                                state: { id: props.targetId },
+                              }}
+                            >
+                              <h5>{view}</h5>
+                            </Link>
+                          </div>
+                        )}{" "}
+                      </td>
+                    </tr>
+                  ))}
+              </tbody>
+            </Table>
+          </CardBody>
+        </Card>
+      </div>
+
+      <ModalForm
+        data-test="modalForm"
+        addModalShow={props.addModalShow}
+        addModalclose={props.addModalclose}
+        handleSubmit={props.handleSubmit}
+        gender={props.gender}
+        handleChange={props.handlechange}
+        handleOptionChange={props.handleOptionChange}
+        title={props.title}
+        ManagerId={props.ManagerId}
+        label={props.label}
+      />
+    </div>
+  );
+}
+
+RiderUI.propTypes = {
+  isLoading: PropTypes.bool,
+  addModalShow: PropTypes.bool,
+  addModalclose: PropTypes.func,
+  addModalopen: PropTypes.func,
+  handleTableChange: PropTypes.func,
+  handleChange: PropTypes.func,
+  handleOptionChange: PropTypes.func,
+  handleCheckChange: PropTypes.func,
+  managerId: PropTypes.string,
+  label: PropTypes.string,
+  title: PropTypes.string,
+  gender: PropTypes.string,
+  status1: PropTypes.array,
+  val: PropTypes.number,
+  ManagerId: PropTypes.string,
+  delete: PropTypes.func,
+  handleSubmit: PropTypes.func,
+  targetId: PropTypes.string,
+};

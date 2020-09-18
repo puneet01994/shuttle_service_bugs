@@ -1,0 +1,133 @@
+import React from "react";
+import PropTypes from "prop-types";
+
+import { Form, FormGroup, Label, Input, CardBody, Card } from "reactstrap";
+
+import Loader from "../Pages/Loader";
+import {
+  updateEmployeeDetails,
+  name,
+  empId,
+  email,
+  mobileNumber,
+  managerId,
+  gender,
+  male,
+  female,
+} from "../../Constants/constants";
+
+/**
+ * update the rider details
+ * @param {object} props
+ */
+export default function UpdateRiderUI(props) {
+  const { updateRider } = props;
+
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="UpdateRider" className="Tbl">
+      <h1 className="Add-form">{updateEmployeeDetails}</h1>
+      <Card>
+        <CardBody>
+          <Form className="Add-form" onSubmit={props.submitHandle}>
+            <FormGroup>
+              <Label for="Name">{name}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="name"
+                required
+                value={updateRider.name}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="Eid">{empId}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="id"
+                required
+                value={updateRider.id}
+                disabled
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="Email">{email}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="Email"
+                id="emailId"
+                required
+                value={updateRider.emailId}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="contact_no">{mobileNumber}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="int"
+                id="contactNumber"
+                required
+                value={updateRider.contactNumber}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label for="Eid">{managerId}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                placeholder="Manager Id"
+                id="managerId"
+                required
+                value={updateRider.managerId}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup tag="fieldset" required>
+              <legend>{gender}</legend>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    id="MALE"
+                    value="MALE"
+                    checked={updateRider.gender === "MALE"}
+                    onChange={props.handleOptionChange}
+                  />{" "}
+                  {male}
+                </Label>
+              </FormGroup>
+              <FormGroup check>
+                <Label check>
+                  <Input
+                    type="radio"
+                    id="FEMALE"
+                    value="FEMALE"
+                    checked={updateRider.gender === "FEMALE"}
+                    onChange={props.handleOptionChange}
+                  />{" "}
+                  {female}
+                </Label>
+              </FormGroup>
+            </FormGroup>
+            <input type="submit" className="button" value="submit" />
+          </Form>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}
+
+UpdateRiderUI.propTypes = {
+  isLoading: PropTypes.bool,
+  updateRider: PropTypes.object,
+  id: PropTypes.string,
+  submitHandle: PropTypes.func,
+  handleChange: PropTypes.func,
+  handleOptionChange: PropTypes.func,
+};

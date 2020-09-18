@@ -1,0 +1,151 @@
+import React from "react";
+import PropTypes from "prop-types";
+import { Form, FormGroup, Label, Input, Card, CardBody } from "reactstrap";
+import { Select } from "antd";
+
+import "antd/dist/antd.css";
+
+import Loader from "../Pages/Loader";
+
+import {
+  updateCabDetails,
+  empId,
+  name,
+  destination,
+  driverName,
+  driverContactNumber,
+  vehicleNumber,
+  assignedTimings,
+  assignedRoute,
+} from "../../Constants/constants";
+
+/**
+ * UpdateCabRequestUI function to update the cab request of particular.
+ * @param {object} props
+ *    @param {string} UpdateCab
+ */
+export default function UpdateCabRequestUI(props) {
+  const { UpdateCab } = props;
+
+  return props.isLoading ? (
+    <Loader data-test="loader" />
+  ) : (
+    <div data-test="UpdateCabRequests" className="Tbl">
+      <h1 className="Add-form">{updateCabDetails}</h1>
+      <Card>
+        <CardBody>
+          <Form className="Add-form" onSubmit={props.submitHandle}>
+            <FormGroup>
+              <Label for="name">{empId}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="employeeId"
+                disabled
+                value={UpdateCab.employeeId}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>{name}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="name"
+                value={UpdateCab.name}
+                disabled
+              />
+            </FormGroup>
+
+            <FormGroup>
+              <Label>{destination}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="destination"
+                disabled
+                value={UpdateCab.destination}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>{driverName}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="driverName"
+                required
+                value={UpdateCab.driverName}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>{driverContactNumber}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="driverContactNumber"
+                required
+                value={UpdateCab.driverContactNumber}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>{vehicleNumber}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="vehicleNumber"
+                required
+                value={UpdateCab.vehicleNumber}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>{assignedTimings}</Label>
+              <Input
+                style={{ width: "400px" }}
+                type="text"
+                id="assignedTiming"
+                required
+                value={UpdateCab.assignedTiming}
+                onChange={props.handleChange}
+              />
+            </FormGroup>
+            <FormGroup>
+              <Label>{assignedRoute}</Label>
+              <br />
+              <Select
+                style={{ width: "400px" }}
+                mode="multiple"
+                placeholder="Assigned Route"
+                required
+                value={UpdateCab.assignedRoutes}
+                onChange={props.handleChange1}
+              >
+                {props.status1.map((item, index) => (
+                  <Select.Option
+                    data-test="selectOption"
+                    key={index}
+                    value={item.destination}
+                  >
+                    {item.destination}
+                  </Select.Option>
+                ))}
+              </Select>
+            </FormGroup>
+
+            <input type="submit" className="button" value="submit" />
+          </Form>
+        </CardBody>
+      </Card>
+    </div>
+  );
+}
+
+UpdateCabRequestUI.propTypes = {
+  isLoading: PropTypes.bool,
+  UpdateCab: PropTypes.object,
+  submitHandle: PropTypes.func,
+  handleChange: PropTypes.func,
+  status1: PropTypes.array,
+  handleChange1: PropTypes.func,
+};

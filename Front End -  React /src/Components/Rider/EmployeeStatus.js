@@ -1,0 +1,168 @@
+import React, { Component } from "react";
+import { connect } from "react-redux";
+import { getEmployeeStatus } from "../../Redux/actions/GET-API";
+import EmployeeStatusUI from "./EmployeeStatusUI";
+import PropTypes from "prop-types";
+import logger from "../Pages/Logger";
+
+class EmployeeStatus extends Component {
+  constructor(props) {
+    super(props);
+    this.state = {
+      val: 0,
+      id: "",
+      targetId: "",
+      checkedRadio: null,
+      enableButton: false,
+      radioButton: false,
+      isLoading: true,
+      empStatus: "empStatus",
+    };
+  }
+
+  /**
+   * mount the EmployeeStatus Component
+   */
+  componentDidMount = () => {
+    this.props.getEmployeeStatus(this.props.token);
+    logger.info("Employee acccount status data", this.props.status1);
+
+  };
+
+  /**
+   * update the props
+   * @param {object} nextProps 
+   * @param {object} prevState 
+   */
+  static getDerivedStateFromProps(nextProps, prevState) {
+    if (nextProps.status1 !== prevState.status1) {
+      return { status1: nextProps.status1 };
+    } else return null;
+  }
+
+  /**
+   * update and set the previous state
+   * @param {object} prevProps
+   *    @param {string} status 
+   */
+  componentDidUpdate(prevProps) {
+    if (prevProps.status1 !== this.props.status1) {
+      this.setState({ ...this.props.status1, isLoading: false });
+    }
+  }
+
+  /**
+   * check and set the state
+   */
+  handleCheckChange = (id) => {
+    this.setState({
+      targetId: id,
+    });
+  };
+
+
+
+  /**to sort the table data according to the values passed
+   * @param {Object} state -- state consists of the followings-
+   *                  @param {srting} sortBy
+   *                  @param {string} val
+   *                  @param {string} pageSize
+   */
+
+  handleTableChange = (e) => {
+    const limit = this.props.empTotalPages;
+    if (
+      e.target.value === "30" ||
+      e.target.value === "40" ||
+      e.target.value === "id"
+    ) {
+      this.setState({ pageSize: e.target.value, val: 0 }, () =>
+        this.props.getEmployeeStatus(
+          this.props.token,
+          this.state.sortBy,
+          this.state.val,
+          this.state.pageSize
+        )
+      );
+    } else if (
+      e.target.value === "20" ||
+      e.target.value === "name" ||
+      e.target.value === "accountStatus"
+    ) {
+      this.setState({ sortBy: e.target.value }, () =>
+        this.props.getEmployeeStatus(
+          this.props.token,
+          this.state.sortBy,
+          this.state.val,
+          this.state.pageSize
+        )
+      );
+    } else if (e.target.value === "Next") {
+      if (this.state.val < limit + 1) {
+        this.setState({ val: this.state.val + 1 }, () => {
+          this.props.getEmployeeStatus(
+            this.props.tokn,
+            this.state.sortBy,
+            this.state.val,
+            this.state.pageSize
+          );
+        });
+      }
+    } else if (e.target.value === "Prev") {
+      if (this.state.val > 0) {
+        this.setState({ val: this.state.val - 1 }, () => {
+          this.props.getEmployeeStatus(
+            this.props.token,
+            this.state.sortBy,
+            this.state.val,
+            this.state.pageSize
+          );
+        });
+      } else {
+        this.props.getEmployeeStatus(
+          this.props.token,
+          this.state.sortBy,
+          this.state.val,
+          this.state.pageSize
+        );
+      }
+    }
+  };
+
+  render() {
+    return (
+      /**
+       *  @returns {JSX.Element}-rendered component of employeeStatusUI
+       */
+      <EmployeeStatusUI
+        data-test="EmployeeStatusUI"
+        val={this.state.val}
+        empStatus={this.state.empStatus}
+        handleCheckChange={this.handleCheckChange}
+        status1={this.props.status1}
+        targetId={this.state.targetId}
+        handleTableChange={this.handleTableChange}
+        enableButton={this.state.enableButton}
+        isLoading={this.state.isLoading}
+      />
+    );
+  }
+}
+
+function mapStateToProps(state) {
+  return {
+    status1: state.userReducer.employeeStatus,
+    empTotalPages: state.userReducer.empTotalPages,
+    token: state.userReducer.tokken,
+  };
+}
+
+export default connect(mapStateToProps, { getEmployeeStatus })(EmployeeStatus);
+
+EmployeeStatus.propTypes = {
+  status1: PropTypes.array,
+  token: PropTypes.string,
+  empTotalPages: PropTypes.string,
+  getEmployeeStatus: PropTypes.func,
+  handleCheckChange: PropTypes.func,
+};
